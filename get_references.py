@@ -74,6 +74,7 @@ if __name__ == "__main__":
             if filename[-4:].upper() == '.CSV':
                 csvFile = os.path.join(dirpath,filename)
                 # For each CSV file
+                print('Processing file ' + csvFile)
                 table = csv_tools.read_csv_table(csvFile)
                 headerTable = table[0]
                 if 'Authors' in headerTable and 'Title' in headerTable and 'References' in headerTable:
@@ -108,12 +109,11 @@ if __name__ == "__main__":
                                 list_ref_IDs_string = ','.join(list_ref_IDs)
                                 ref_detail_row = [id_in_paperTable, no_ref, no_ref_ext, no_ref_self, list_ref_IDs_string] + paperTable[id_in_paperTable][1:]
                                 list_references.append(ref_detail_row)
-                            
-                                
+
     # This command should be executed after all the references were collected
     del list_references[0] # remove header line before sorting
     list_references.sort(key=lambda x:x[0],reverse=False) # sort by ID
     list_references.insert(0, list_header)
     csv_tools.write_table_csv(exportFile, list_references)
     #print(list_references)
-
+    print('Analysis finished. Result is written to file ' + exportFile)

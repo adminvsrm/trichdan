@@ -4,6 +4,7 @@ import os
 import csv
 import difflib
 import re
+csv.field_size_limit(sys.maxsize) # overcome default field size limit of 131072 chars
 
 def read_csv_table(csvFile):
     """

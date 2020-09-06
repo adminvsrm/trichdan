@@ -7,7 +7,7 @@
 import os
 import sys
 import csv_tools
-
+import csv
 
 def export_table_combined(list_author_combined, list_affi_combined):
     table_combined = [[list_author_combined[k], len(list_affi_combined[k]), ';'.join(list_affi_combined[k])] for k in range(len(list_author_combined))]
@@ -73,6 +73,7 @@ if __name__ == "__main__":
             if filename[-4:].upper() == '.CSV':
                 csvFile = os.path.join(dirpath,filename)
                 # For each CSV file
+                print('Processing file ' + csvFile)
                 table = csv_tools.read_csv_table(csvFile)
                 headerTable = table[0]
                 if 'Authors with affiliations' in headerTable:
@@ -91,35 +92,5 @@ if __name__ == "__main__":
     list_header = ['Author', 'Number of affiliations', 'Affiliations']
     authorTable.insert(0, list_header)
     csv_tools.write_table_csv(exportFile, authorTable)
+    print('Analysis finished. Result is written to file ' + exportFile)
 
-
-## Test with one file
-#if __name__ == "__main__":
-    #csvFile = 'TimonRabczuk_citation_by_authors.csv'
-    #exportFile = 'list_all_authors.csv'
-    #list_author_affi = []
-    ## For each CSV file
-    #table = csv_tools.read_csv_table(csvFile)
-    #headerTable = table[0]
-    #if 'Authors with affiliations' in headerTable:
-        #affi_index = headerTable.index('Authors with affiliations')
-        #affi_data = [row[affi_index] for row in table]
-        ##print('List of authors and affiliations: \n')
-        ##print(affi_data[1922])
-        ##test = parse_author_affi(affi_data[1922])
-        ##print(test['firstname'], test['lastname'], test['affiliation'])
-    
-        #for paper_affi in affi_data:
-            #list_authors = paper_affi.split(';')
-            #for author in list_authors:
-                #if not author in list_author_affi: # compare both name and affiliation
-                    #list_author_affi.append(author)                
-    
-        ## This command should be executed after all the author affiliations were collected
-        #list_author_affi.sort()
-        #list_author_combined, list_affi_combined = group_affi_by_author(list_author_affi)
-        #authorTable = export_table_combined(list_author_combined, list_affi_combined)
-        #csv_tools.write_table_csv(exportFile, authorTable)
-        #print(authorTable)
-
-    

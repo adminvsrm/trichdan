@@ -29,6 +29,7 @@ if __name__ == "__main__":
             if filename[-4:].upper() == '.CSV':
                 csvFile = os.path.join(dirpath,filename)
                 # For each CSV file
+                print('Processing file ' + csvFile)
                 table = csv_tools.read_csv_table(csvFile)
                 headerTable = table[0]
                 if 'Authors' in headerTable and 'Title' in headerTable and 'Year' in headerTable and 'Source title' in headerTable and 'DOI' in headerTable and 'Publisher' in headerTable:
@@ -51,5 +52,6 @@ if __name__ == "__main__":
         list_papers[k].insert(0, k) # add ID
     csv_tools.write_table_csv(exportFile, list_papers)
     #print(list_papers)
+    print('Analysis finished. Result is written to file ' + exportFile)
 
     
