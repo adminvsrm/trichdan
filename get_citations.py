@@ -37,7 +37,7 @@ if __name__ == "__main__":
     
     for row in refTable[1:]:
         paper_id = str(row[0])
-        print('Processing paper: ', paper_id)
+        #print('Processing paper: ', paper_id)
         paper_ref = row[4].split(',')
         if not paper_ref == ['']: # there are some references in the list of papers
             for ref in paper_ref:

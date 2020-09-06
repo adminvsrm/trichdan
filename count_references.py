@@ -67,14 +67,14 @@ if __name__ == "__main__":
     # Then scan the table of references to do counting
     for row in refTable[1:]:
         paper_id = str(row[0])
-        print('Processing paper: ', paper_id)
+        #print('Processing paper: ', paper_id)
         for person in row[6]:
             if person in filtered_authors:
                 no_papers[filtered_authors.index(person)] += 1
-                no_total_refs[filtered_authors.index(person)] += len(row[4])
-                print(row[4])
+                no_total_refs[filtered_authors.index(person)] += int(row[1])
+                #print(row[4])
                 for ref_id in row[4]: # row[4] is List ID of references
-                    print(' ref_id', ref_id)
+                    #print(' ref_id', ref_id)
                     authors_of_ref = refTable[int(ref_id)][6] # note that ID corresponds to the row number of the paper in refTable, so we access directly row number=ref_id instead of searching for ref_id in first column of refTable
                     for ref_author in authors_of_ref:
                         if ref_author in filtered_authors: # reference is co-authored by one author of the network
