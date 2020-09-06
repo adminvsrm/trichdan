@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
 
     #count_references(dataFolder, exportFile, listReferences, listNetAuthors)
-    list_header = ['ID', 'Author', 'Number of papers', 'Number of papers citing (one of) network authors', 'Number of papers receiving citations from network authors', 'Total number of references in author\' papers', 'Number of references to network authors (self cite + ring cite)', 'Number of citations from network authors']
+    list_header = ['ID', 'Author', 'Number of papers', 'Number of papers citing (one of) network authors', 'Number of papers receiving citations from network authors', 'Number of referred papers co-authored by network authors', 'Number of cited papers from network authors', 'Total number of references in author\' papers', 'Number of references to network authors (self cite + ring cite)', 'Number of citations from network authors']
     list_stats = [list_header]
     with open(listNetAuthors, "rt") as textfile:
         author_lines = textfile.readlines()
@@ -42,6 +42,8 @@ if __name__ == "__main__":
     no_total_refs = [0]*len(filtered_authors)
     no_refs_to_net = [0]*len(filtered_authors)
     no_citations_from_net = [0]*len(filtered_authors)
+    no_times_references_to_net = [0]*len(filtered_authors)
+    no_times_citations_from_net = [0]*len(filtered_authors)
     temp_list_papers_with_references_to_net = [[] for _ in range(len(filtered_authors))]
     temp_list_papers_with_citations_from_net = [[] for _ in range(len(filtered_authors))]
     temp_list_references_to_net = [[] for _ in range(len(filtered_authors))]
@@ -91,12 +93,17 @@ if __name__ == "__main__":
                                 temp_list_citations_from_net[filtered_authors.index(ref_author)].append(paper_id)
                                 no_citations_from_net[filtered_authors.index(ref_author)] += 1
                             
+                            if not (paper_id, ref_id) in temp_list_citing_pairs_within_net:
+                                temp_list_citing_pairs_within_net.append((paper_id, ref_id))
+                                no_times_references_to_net[filtered_authors.index(person)] += 1
+                                no_times_citations_from_net[filtered_authors.index(ref_author)] += 1
+                            
                             matrix_references[filtered_authors.index(person)][filtered_authors.index(ref_author)] += 1
                             #matrix_citations[filtered_authors.index(ref_author)][filtered_authors.index(person)] += 1 # just the transpose of matrix_references
                             
     
     for k in range(len(filtered_authors)):
-        list_stats.append([k+1, filtered_authors[k], no_papers[k], no_papers_citing_net[k], no_papers_cited_by_net[k], no_total_refs[k], no_refs_to_net[k], no_citations_from_net[k]] + matrix_references[k])
+        list_stats.append([k+1, filtered_authors[k], no_papers[k], no_papers_citing_net[k], no_papers_cited_by_net[k], no_refs_to_net[k], no_citations_from_net[k], no_total_refs[k], no_times_references_to_net[k], no_times_citations_from_net[k]] + matrix_references[k])
     
     for author in filtered_authors:
         list_stats[0].append(author + ' (cited by author in row)')
