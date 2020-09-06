@@ -39,16 +39,17 @@ if __name__ == "__main__":
     no_papers = [0]*len(filtered_authors)
     no_papers_citing_net = [0]*len(filtered_authors)
     no_papers_cited_by_net = [0]*len(filtered_authors)
-    no_total_refs = [0]*len(filtered_authors)
     no_refs_to_net = [0]*len(filtered_authors)
     no_citations_from_net = [0]*len(filtered_authors)
+    no_total_refs = [0]*len(filtered_authors)
     no_times_references_to_net = [0]*len(filtered_authors)
     no_times_citations_from_net = [0]*len(filtered_authors)
     temp_list_papers_with_references_to_net = [[] for _ in range(len(filtered_authors))]
     temp_list_papers_with_citations_from_net = [[] for _ in range(len(filtered_authors))]
     temp_list_references_to_net = [[] for _ in range(len(filtered_authors))]
-    temp_list_citations_from_net = [[] for _ in range(len(filtered_authors))]    
-    temp_list_citing_pairs_within_net = []
+    temp_list_citations_from_net = [[] for _ in range(len(filtered_authors))]
+    temp_list_ref_pairs_within_net = [[] for _ in range(len(filtered_authors))]
+    temp_list_cite_pairs_within_net = [[] for _ in range(len(filtered_authors))]
     
     matrix_references = [ [0 for _ in range(len(filtered_authors))] for _ in range(len(filtered_authors)) ] # each cell is number of references: author in row cite author in column
     #matrix_citations = [ [0 for _ in range(len(filtered_authors))] for _ in range(len(filtered_authors)) ] # each cell is number of citations: author in row cited by author in column
@@ -93,9 +94,12 @@ if __name__ == "__main__":
                                 temp_list_citations_from_net[filtered_authors.index(ref_author)].append(paper_id)
                                 no_citations_from_net[filtered_authors.index(ref_author)] += 1
                             
-                            if not (paper_id, ref_id) in temp_list_citing_pairs_within_net:
-                                temp_list_citing_pairs_within_net.append((paper_id, ref_id))
+                            if not (paper_id, ref_id) in temp_list_ref_pairs_within_net[filtered_authors.index(person)]:
+                                temp_list_ref_pairs_within_net[filtered_authors.index(person)].append((paper_id, ref_id))
                                 no_times_references_to_net[filtered_authors.index(person)] += 1
+                            
+                            if not (paper_id, ref_id) in temp_list_cite_pairs_within_net[filtered_authors.index(ref_author)]:
+                                temp_list_cite_pairs_within_net[filtered_authors.index(ref_author)].append((paper_id, ref_id))
                                 no_times_citations_from_net[filtered_authors.index(ref_author)] += 1
                             
                             matrix_references[filtered_authors.index(person)][filtered_authors.index(ref_author)] += 1
