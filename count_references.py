@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
 
     #count_references(dataFolder, exportFile, listReferences, listNetAuthors)
-    list_header = ['ID', 'Author', 'Number of papers', 'Number of papers citing (one of) network authors', 'Number of papers receiving citations from network authors', 'Number of referred papers co-authored by network authors', 'Number of cited papers from network authors', 'Total number of references in author\' papers', 'Number of references to network authors (self cite + ring cite)', 'Number of citations from network authors']
+    list_header = ['ID', 'Author', 'Number of papers', 'Number of papers citing (one of) network authors', 'Number of papers receiving citations from network authors', 'Number of referring papers co-authored by network authors', 'Number of citing papers co-authored by network authors', 'Total number of references in author\' papers', 'Number of references to network authors (self cite + ring cite)', 'Number of citations from network authors']
     list_stats = [list_header]
     with open(listNetAuthors, "rt") as textfile:
         author_lines = textfile.readlines()
