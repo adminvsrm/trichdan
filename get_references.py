@@ -9,6 +9,9 @@ import sys
 import csv_tools
 import re
 
+# Setting option, to filter out papers with too many references (e.g. review paper)
+threshold_no_ref = 200
+
 def parse_references(ref_text):
     # Parse the Authors with affiliations for each article
     # Example text: Aziz, A., Jamshed, W., Ali, Y., Shams, O.S.P.S.P., Heat transfer and entropy analysis of Maxwell hybrid nanofluid including effects of inclined magnetic field, Joule heating and thermal radiation (2019) Discr. Contin. Dyn. Syst. Ser. S, 2019, p. 1937; Minea, A.A., Moldoveanu, M.G., Overview of hybrid nanofluids development and benefits (2018) Journal of Engineering Thermophysics, 27 (4), pp. 507-514; Chamkha, A.J., Dogonchi, A.S., Ganji, D.D., Magneto-hydrodynamic flow and heat transfer of a hybrid nanofluid in a rotating system among two surfaces in the presence of thermal radiation and joule heating (2019) AIP Advances, 9 (2), p. 025103; Bui-Thanh, T., Damodaran, M., Willcox, K., Proper orthogonal decomposition extensions for parametric applications in transonic aerodynamics AIAA, 15th Computational Fluid Dynamics Conference, (Orlando, FL); Global emission. Analysis: coronavirus set to cause largest ever annual fall in CO2 emissions https://www.carbonbrief.org/analysis-coronavirus-set-to-cause-largest-ever-annual-fall-in-co2-emissions, Available at: (Accessed 9 April 2020)
@@ -108,7 +111,9 @@ if __name__ == "__main__":
                                             no_ref_self += 1
                                 list_ref_IDs_string = ','.join(list_ref_IDs)
                                 ref_detail_row = [id_in_paperTable, no_ref, no_ref_ext, no_ref_self, list_ref_IDs_string] + paperTable[id_in_paperTable][1:]
-                                list_references.append(ref_detail_row)
+                                
+                                if no_ref < threshold_no_ref:
+                                    list_references.append(ref_detail_row)
 
     # This command should be executed after all the references were collected
     del list_references[0] # remove header line before sorting
