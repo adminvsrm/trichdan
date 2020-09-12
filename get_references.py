@@ -9,8 +9,8 @@ import sys
 import csv_tools
 import re
 
-# Setting option, to filter out papers with too many references (e.g. review paper)
-threshold_no_ref = 200
+## Setting option, to filter out papers with too many references (e.g. review paper)
+#threshold_no_ref = 200
 
 def parse_references(ref_text):
     # Parse the Authors with affiliations for each article
@@ -62,12 +62,14 @@ if __name__ == "__main__":
         listPaper = 'list_papers.csv'
 
     #get_papers(dataFolder, exportFile)
-    list_header = ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link']
+    list_header = ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating']
     list_references = [list_header]
     
     paperTable = csv_tools.read_csv_table(listPaper)
-    # Note: header of paperTable is ['ID', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link']
+    # Note: header of paperTable is ['ID', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating']
     paperTable_transpose = csv_tools.transpose_table(paperTable)
+    rating_list = list(dict.fromkeys(paperTable_transpose[7][1:]))
+    
     for k in range(1,len(paperTable_transpose[2])):
         authors_split = paperTable_transpose[2][k].split(',')
         paperTable_transpose[2][k] = [item.strip() for item in authors_split]
@@ -95,9 +97,10 @@ if __name__ == "__main__":
                                 no_ref_ext = 0
                                 no_ref_self = 0
                                 list_ref_IDs = []
+                                no_ref_with_rating = [0]*len(rating_list)
                                 for kk in range(len(ref_titles)):
                                     paper_title = ref_titles[kk]
-                                    paper_authors = ref_authors[kk]                                
+                                    paper_authors = ref_authors[kk]
                                     if not paper_title in paperTable_transpose[1]:
                                         no_ref_ext += 1
                                     else: # reference is in the paper table
@@ -109,16 +112,22 @@ if __name__ == "__main__":
                                                 self_cite_flag = True
                                         if self_cite_flag == True:
                                             no_ref_self += 1
-                                list_ref_IDs_string = ','.join(list_ref_IDs)
-                                ref_detail_row = [id_in_paperTable, no_ref, no_ref_ext, no_ref_self, list_ref_IDs_string] + paperTable[id_in_paperTable][1:]
+                                        # Count refs by rating
+                                        if paperTable[id_in_paperTable][7] in rating_list:
+                                            no_ref_with_rating[rating_list.index(paperTable[id_in_paperTable][7])] += 1
                                 
-                                if no_ref < threshold_no_ref:
-                                    list_references.append(ref_detail_row)
+                                list_ref_IDs_string = ','.join(list_ref_IDs)
+                                
+                                
+                                ref_detail_row = [id_in_paperTable, no_ref, no_ref_ext, no_ref_self, list_ref_IDs_string] + paperTable[id_in_paperTable][1:] + no_ref_with_rating
+                                
+                                #if no_ref < threshold_no_ref:
+                                list_references.append(ref_detail_row)
 
     # This command should be executed after all the references were collected
     del list_references[0] # remove header line before sorting
     list_references.sort(key=lambda x:x[0],reverse=False) # sort by ID
-    list_references.insert(0, list_header)
+    list_references.insert(0, list_header + rating_list)
     csv_tools.write_table_csv(exportFile, list_references)
     #print(list_references)
     print('Analysis finished. Result is written to file ' + exportFile)

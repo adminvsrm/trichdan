@@ -11,13 +11,19 @@ Export dữ liệu citations từ Scopus, với các thông tin: tên bài báo,
 
 ## Chạy chương trình từng bước:
 
-### Chạy file *get_authors.py* (trên nền tảng Python 3), nó sẽ đọc tất cả các file trong **scopus_data** và xuất ra file **list_all_authors.csv**
+### Chạy file *get_sources.py* (trên nền tảng Python 3), để liệt kê tên tất cả các tạp chí, hội nghị, nó sẽ đọc các file .csv trong cơ sở dữ liệu ở thư mục scopus_data và xuất ra file ***list_sources.csv***.
+Sau khi file list_sources.csv được tạo ra tự động, người dùng có thể mở file này bằng Excel hay OpenOffice để thêm thông tin riêng của mình: Trong file list_sources.csv có cột cuối cùng là Rating, để người sử dụng tự nhập đánh giá của mình về tạp chí đó (ví dụ có thể ghi chú đó là tạp chí "Top"/"Good"/"Ok"/"Bad"/"Avoid" hay cũng có thể điền một số vào đó).
+
+Nếu người dùng đã chuẩn bị file input_net_authors.txt (xem ở dưới) thì chạy file *get_sources_net.py* để chương trình chỉ lọc ra các tạp chí mà các tác giả liên quan có xuất bản ở đó, file output là list_sources_net.csv, danh sách các tạp chí trong này sẽ ít hơn nhiều so với list_sources.csv khi chạy phân tích toàn bộ các tạp chí. Sau đó, sửa file list_sources_net.csv đẻ thêm dữ liệu Rating cho tạp chí, rồi đổi tên file đó thành list_sources.csv để dùng ở bước tiếp theo.
+
+
+### Chạy file *get_authors.py* nó sẽ đọc tất cả các file trong **scopus_data** và xuất ra file **list_all_authors.csv**
 Cấu trúc của **list_all_authors.csv** có các cột:
 1. Tên tác giả
 2. Số lượng affiliations trong các bài của tác giả này
 3. Các affiliations của tác giả này (phân cách bằng dấu chấm phẩy)
 
-### Chạy file *get_papers.py*, nó sẽ đọc tất cả các file trong **scopus_data** và xuất ra file **list_papers.csv**
+### Chạy file *get_papers.py*, nó sẽ đọc tất cả các file trong **scopus_data** và file list_sources.csv (để lấy nhãn Rating của tạp chí vào làm Rating cho bài báo), để xuất ra file **list_papers.csv**
 Cấu trúc của **list_papers.csv** có các cột:
 1. ID (số thứ tự trong danh sách)
 2. Tên bài báo (nếu có nhiều bài báo trùng tên, hoặc một bài được liệt kê ở nhiều chỗ, thì chỉ lọc giữ lại một bài)
@@ -26,6 +32,7 @@ Cấu trúc của **list_papers.csv** có các cột:
 5. Tên nhà xuất bản
 6. Năm xuất bản
 7. Địa chỉ DOI
+8. Rating (kế thừa từ Rating của tạp chí do người dùng đã đánh giá)
   
 ### Chạy file *get_references.py*, nó sẽ đọc một lần nữa tất cả các file trong **scopus_data** cùng với file **list_papers.csv** và xuất ra file **list_references.csv**.
 Cấu trúc của **list_references.csv** có các cột:
@@ -36,6 +43,8 @@ Cấu trúc của **list_references.csv** có các cột:
 5. Số lượng references trong danh mục ở file list_papers.csv mà có trùng ít nhất 1 tác giả với bài này (self cite)
 6. Danh sách các bài nằm trong list_papers.csv mà bài này đã cite (liệt kê chuỗi các ID, ngăn cách bằng dấu phẩy, e.g. 2,15,40)
 và các cột còn lại trong file list_papers.csv (từ Tên bài báo, đến Địa chỉ DOI)
+7. Rating của bài này
+8... Các cột thống kê cho biết số lượng bài trong danh sách references thuộc các nhóm Rating nào (mỗi nhóm là ở một cột, nhóm mặc định là để trống, nếu không có thông tin Rating của tạp chí chứa reference)
   
 ### Chạy file *get_citations.csv*, nó sẽ đọc file **list_references.csv** và xuất ra file **list_citations.csv**.
 Cấu trúc của list_citations.csv có các cột:
@@ -73,3 +82,8 @@ File **list_papers.csv**: file này chỉ là kết quả trung gian.
 Đọc file **references_net.csv**: các con số quan trọng nằm ở cột Number of references to network authors (self cite + ring cite), xét trong tương quan với Total number of references in author' papers. Số liệu ở cột Number of citations from network authors cũng đáng quan tâm, có thể  so sánh con số đó với tổng số citations mà tác giả nhận được (xem trên trang Scopus) để biết tác giả có nhận được nhiều citations từ những người ở ngoài collaboration network hay không.
 
 Người phân tích có thể chỉnh lại danh sách trong file input_net_authors.txt để thay đổi phạm vi thống kê (tăng, giảm người trong collaboration network), rồi chạy lại file *count_references.py* và khảo sát kết quả ở **references_net.csv** (lặp lại khảo sát nhiều vòng, với hy vọng kết quả rõ ràng dần).
+  
+## Các công cụ bổ sung:
+
+### Merge dữ liệu tải về từ Scopus:
+Khi chạy file merge_scopus_data.py, nó sẽ đọc tất cả các file trong thư mục scopus_data, rồi xuất ra một file toàn bộ dữ liệu có tên ***all_database.csv***, tự loại bỏ những dòng dữ liệu trùng lắp trong các file. Công cụ này tiện dụng để tạo ra file dữ liệu duy nhất dùng cho một chương trình khác, như VOSviewer.

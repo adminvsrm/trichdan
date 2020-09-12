@@ -55,7 +55,10 @@ if __name__ == "__main__":
     #matrix_citations = [ [0 for _ in range(len(filtered_authors))] for _ in range(len(filtered_authors)) ] # each cell is number of citations: author in row cited by author in column
     
     refTable = csv_tools.read_csv_table(listReferences)
-    # Note: header of refTable is ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link']
+    # Note: header of refTable is ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating', columns of references by rating]
+    
+    rating_list = list(dict.fromkeys([row[11] for row in refTable[1:]]))
+    matrix_cite_with_rating = [ [0 for _ in range(len(rating_list))] for _ in range(len(filtered_authors)) ]
     
     # First, split author text into list of authors, and split reference text into list of references ID
     for row in refTable[1:]:
@@ -68,6 +71,16 @@ if __name__ == "__main__":
     for row in refTable[1:]:
         paper_id = str(row[0])
         #print('Processing paper: ', paper_id)
+        # Count citations by rating
+        for ref_id in row[4]:
+            #print(row)
+            #print(ref_id)
+            authors_of_ref = refTable[int(ref_id)][6]
+            for ref_author in authors_of_ref:
+                if ref_author in filtered_authors: # citation for one author of the network
+                    citation_rating = refTable[int(ref_id)][11]
+                    matrix_cite_with_rating[filtered_authors.index(ref_author)][rating_list.index(citation_rating)] += 1
+        
         for person in row[6]:
             if person in filtered_authors:
                 no_papers[filtered_authors.index(person)] += 1
@@ -107,11 +120,15 @@ if __name__ == "__main__":
                             
     
     for k in range(len(filtered_authors)):
-        list_stats.append([k+1, filtered_authors[k], no_papers[k], no_papers_citing_net[k], no_papers_cited_by_net[k], no_refs_to_net[k], no_citations_from_net[k], no_total_refs[k], no_times_references_to_net[k], no_times_citations_from_net[k]] + matrix_references[k])
+        list_stats.append([k+1, filtered_authors[k], no_papers[k], no_papers_citing_net[k], no_papers_cited_by_net[k], no_refs_to_net[k], no_citations_from_net[k], no_total_refs[k], no_times_references_to_net[k], no_times_citations_from_net[k]] + matrix_cite_with_rating[k] + matrix_references[k])
     
+    # Extend the header
+    for rating in rating_list:
+        list_stats[0].append('Citation rating: ' + rating)
     for author in filtered_authors:
         list_stats[0].append(author + ' (cited by author in row)')
     
     csv_tools.write_table_csv(exportFile, list_stats)
     #print(list_stats)
     print('Analysis finished. Result is written to file ' + exportFile)
+    
