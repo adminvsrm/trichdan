@@ -61,14 +61,14 @@ if __name__ == "__main__":
     else:
         listPaper = 'list_papers.csv'
 
-    #get_papers(dataFolder, exportFile)
-    list_header = ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating']
+    #get_references(dataFolder, exportFile, listPaper)
+    list_header = ['ID', 'Number of references', 'Number of references outside selected database', 'Number of self-cited references', 'List ID of references', 'Title', 'Authors', 'Source title', 'Abbreviated Source Title', 'Publisher', 'Conference name', 'Year', 'Link', 'Rating']
     list_references = [list_header]
     
     paperTable = csv_tools.read_csv_table(listPaper)
-    # Note: header of paperTable is ['ID', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating']
+    # Note: header of paperTable is ['ID', 'Title', 'Authors', 'Source title', 'Abbreviated Source Title', 'Publisher', 'Conference name', 'Year', 'Link', 'Rating']
     paperTable_transpose = csv_tools.transpose_table(paperTable)
-    rating_list = list(dict.fromkeys(paperTable_transpose[7][1:]))
+    rating_list = list(dict.fromkeys(paperTable_transpose[9][1:]))
     
     for k in range(1,len(paperTable_transpose[2])):
         authors_split = paperTable_transpose[2][k].split(',')
@@ -113,8 +113,8 @@ if __name__ == "__main__":
                                         if self_cite_flag == True:
                                             no_ref_self += 1
                                         # Count refs by rating
-                                        if paperTable[id_in_paperTable][7] in rating_list:
-                                            no_ref_with_rating[rating_list.index(paperTable[id_in_paperTable][7])] += 1
+                                        if paperTable[id_in_paperTable][9] in rating_list:
+                                            no_ref_with_rating[rating_list.index(paperTable[id_in_paperTable][9])] += 1
                                 
                                 list_ref_IDs_string = ','.join(list_ref_IDs)
                                 

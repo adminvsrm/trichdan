@@ -26,7 +26,7 @@ if __name__ == "__main__":
         listReferences = 'list_references.csv'
 
     #get_citations(dataFolder, exportFile, listReferences)
-    list_header = ['ID', 'Number of citations in selected database', 'List ID of citations', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link']
+    list_header = ['ID', 'Number of citations in selected database', 'List ID of citations', 'Title', 'Authors', 'Source title', 'Abbreviated Source Title', 'Publisher', 'Conference name', 'Year', 'Link']
     list_citations = [list_header]
     
     refTable = csv_tools.read_csv_table(listReferences)

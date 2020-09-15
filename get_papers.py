@@ -25,7 +25,7 @@ if __name__ == "__main__":
         listSource = 'list_sources.csv'
 
     #get_papers(dataFolder, exportFile)
-    list_header = ['ID', 'Title', 'Authors', 'Source title', 'Publisher', 'Year', 'Link', 'Rating']
+    list_header = ['ID', 'Title', 'Authors', 'Source title', 'Abbreviated Source Title', 'Publisher', 'Conference name', 'Year', 'Link', 'Rating']
     list_papers = [list_header]
 
     sourceTable = csv_tools.read_csv_table(listSource)
@@ -44,10 +44,12 @@ if __name__ == "__main__":
                     title_index = headerTable.index('Title')
                     author_index = headerTable.index('Authors')
                     sourceTitle_index = headerTable.index('Source title')
+                    abbr_sourceTitle_index = headerTable.index('Abbreviated Source Title')
                     publisher_index = headerTable.index('Publisher')
+                    conference_index = headerTable.index('Conference name')
                     link_index = headerTable.index('DOI')
                     year_index = headerTable.index('Year')
-                    access_index = [title_index, author_index, sourceTitle_index, publisher_index, year_index, link_index]
+                    access_index = [title_index, author_index, sourceTitle_index, publisher_index, abbr_sourceTitle_index, conference_index, year_index, link_index]
                     for row in table[1:]:
                         if not row[title_index] in [item[0] for item in list_papers]:
                             list_papers.append([row[k] for k in access_index])

@@ -1,4 +1,4 @@
-# Script to extract list of journals, conferences, books from Scopus exported data
+# Script to extract list of journals, conferences, books from Scopus exported data, the list only contains sources in which network authors have published
 # Dang Doan, 2020-09
 # Usage: put csv files exported from Scopus to folder scopus_data, then run command: python3 get_sources_net.py
 # Output is file list_sources_net.csv
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     else:
         listNetAuthors = 'input_net_authors.txt'
 
-    #get_papers(dataFolder, exportFile)
+    #get_sources_net(dataFolder, exportFile, listNetAuthors)
     list_header = ['ID', 'Source title', 'Abbreviated Source Title', 'Publisher', 'Conference name', 'Rating']
     list_sources = [list_header]
     
@@ -55,7 +55,6 @@ if __name__ == "__main__":
                             list_authors = [author.strip() for author in authors_split]
                             flag_author_exist = False
                             for author in list_authors:
-                                print(author)
                                 if author in filtered_authors:
                                     flag_author_exist = True
                             if flag_author_exist:
